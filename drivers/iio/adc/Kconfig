@@ -65,6 +65,20 @@ config AD4062
 	  To compile this driver as a module, choose M here: the module will be
 	  called ad4062.
 
+config AD4080
+	tristate "Analog Devices AD4080 high speed ADC"
+	depends on SPI
+	select REGMAP_SPI
+	select IIO_BACKEND
+	help
+	  Say yes here to build support for Analog Devices AD4080
+	  high speed, low noise, low distortion, 20-bit, Easy Drive,
+	  successive approximation register (SAR) analog-to-digital
+	  converter (ADC). Supports iio_backended devices for AD4080.
+
+	  To compile this driver as a module, choose M here: the module will be
+	  called ad4080.
+
 config AD4130
 	tristate "Analog Device AD4130 ADC Driver"
 	depends on SPI
@@ -91,6 +105,21 @@ config AD4134
 	  To compile this driver as a module, choose M here: the module will be
 	  called ad4134.
 
+config AD4170_4
+	tristate "Analog Device AD4170-4 ADC Driver"
+	depends on SPI
+	select REGMAP_SPI
+	select IIO_BUFFER
+	select IIO_TRIGGERED_BUFFER
+	depends on COMMON_CLK
+	depends on GPIOLIB
+	help
+	  Say yes here to build support for Analog Devices AD4170-4 SPI analog
+	  to digital converters (ADC).
+
+	  To compile this driver as a module, choose M here: the module will be
+	  called ad4170-4.
+
 config AD4630
 	tristate "Analog Device AD4630 ADC Driver"
 	depends on SPI_MASTER
@@ -105,6 +134,21 @@ config AD4630
 
 	  To compile this driver as a module, choose M here: the module will be
 	  called ad4630.
+
+config AD4691
+	tristate "Analog Devices AD4691 Family ADC Driver"
+	depends on SPI
+	select IIO_BUFFER
+	select IIO_BUFFER_DMAENGINE
+	select IIO_TRIGGERED_BUFFER
+	select REGMAP
+	select SPI_OFFLOAD
+	help
+	  Say yes here to build support for Analog Devices AD4691 Family MuxSAR
+	  SPI analog to digital converters (ADC).
+
+	  To compile this driver as a module, choose M here: the module will be
+	  called ad4691.
 
 config AD4695
 	tristate "Analog Device AD4695 ADC Driver"
@@ -273,6 +317,16 @@ config AD7380
 	  To compile this driver as a module, choose M here: the module will be
 	  called ad7380.
 
+config AD7405
+	tristate "Analog Device AD7405 ADC Driver"
+	depends on IIO_BACKEND
+	help
+	  Say yes here to build support for Analog Devices AD7405, ADUM7701,
+	  ADUM7702, ADUM7703 analog to digital converters (ADC).
+
+	  To compile this driver as a module, choose M here: the module will be
+	  called ad7405.
+
 config AD7476
 	tristate "Analog Devices AD7476 1-channel ADCs driver and other similar devices from AD and TI"
 	depends on SPI
@@ -348,6 +402,7 @@ config AD7768
 	tristate "Analog Devices AD7768 ADC driver"
 	depends on SPI
 	depends on GPIOLIB
+	select CF_AXI_ADC
 	select IIO_BUFFER
 	select IIO_BUFFER_DMA
 	select IIO_BUFFER_DMAENGINE
@@ -361,11 +416,14 @@ config AD7768
 config AD7768_1
 	tristate "Analog Devices AD7768-1 ADC driver"
 	depends on SPI
+	select REGULATOR
+	select REGMAP_SPI
+	select RATIONAL
 	select IIO_BUFFER
+	select IIO_BUFFER_DMAENGINE
 	select IIO_TRIGGER
 	select IIO_TRIGGERED_BUFFER
-	select IIO_BUFFER_DMA
-	select IIO_BUFFER_DMAENGINE
+	select SPI_OFFLOAD
 	help
 	  Say yes here to build support for Analog Devices AD7768-1 SPI
 	  simultaneously sampling sigma-delta analog to digital converter (ADC).

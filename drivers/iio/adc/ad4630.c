@@ -771,8 +771,6 @@ static int ad4630_buffer_predisable(struct iio_dev *indio_dev)
 			BIT(IIO_CHAN_INFO_CALIBBIAS),			\
 	.info_mask_separate_available = _msk_avail,			\
 	.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ),	\
-	.info_mask_shared_by_all_available =				\
-				BIT(IIO_CHAN_INFO_SAMP_FREQ),		\
 	.info_mask_shared_by_type = _msk_type |				\
 				BIT(IIO_CHAN_INFO_SCALE),		\
 	.info_mask_shared_by_type_available = _msk_type,		\
@@ -856,7 +854,7 @@ static const struct ad4630_out_mode ad4630_20_modes[] = {
 			AD4630_CHAN(0, AD4630_CHAN_INFO_NONE, 32, 20, 0, AD4630_CHAN_INFO_NONE),
 			AD4630_CHAN(1, AD4630_CHAN_INFO_NONE, 32, 20, 0, AD4630_CHAN_INFO_NONE),
 		},
-		.data_width = 24,
+		.data_width = 20,
 	},
 	[AD4630_16_DIFF_8_COM] = {
 		.channels = {
@@ -1050,9 +1048,9 @@ static const struct ad4630_chip_info ad4630_chip_info[] = {
 		.modes = ad4630_20_modes,
 		.out_modes_mask = GENMASK(3, 0),
 		.name = "ad4630-20",
-		.min_offset = (int)BIT(23) * -1,
-		.max_offset = BIT(23) - 1,
-		.base_word_len = 24,
+		.min_offset = (int)BIT(19) * -1,
+		.max_offset = BIT(19) - 1,
+		.base_word_len = 20,
 		.n_channels = 2,
 	},
 	[ID_AD4632_20] = {
@@ -1060,9 +1058,9 @@ static const struct ad4630_chip_info ad4630_chip_info[] = {
 		.modes = ad4630_20_modes,
 		.out_modes_mask = GENMASK(3, 0),
 		.name = "ad4632-20",
-		.min_offset = (int)BIT(23) * -1,
-		.max_offset = BIT(23) - 1,
-		.base_word_len = 24,
+		.min_offset = (int)BIT(19) * -1,
+		.max_offset = BIT(19) - 1,
+		.base_word_len = 20,
 		.n_channels = 2,
 	},
 	[ID_AD4630_24] = {

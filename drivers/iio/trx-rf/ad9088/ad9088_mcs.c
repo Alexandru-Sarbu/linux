@@ -169,7 +169,7 @@ int ad9088_mcs_init_cal_validate(struct ad9088_phy *phy,
 	int ret = 0;
 
 	adi_apollo_device_t *device = &phy->ad9088;
-	u64 dev_clk_hz = (u64)phy->profile.clk_cfg.dev_clk_freq_kHz * 1000;
+	u64 dev_clk_hz = phy->profile.clk_cfg.dev_clk_freq_Hz;
 	u32 post_cal_init_sysref_diff_cycles;
 	u64 int_sysref_align_diff;
 	bool is_locked;
@@ -264,7 +264,7 @@ end:
 	return ret;
 }
 
-int ad9088_mcs_tracking_cal_setup(struct ad9088_phy *phy, u16 mcs_track_decimation,
+int ad9088_mcs_tracking_cal_setup(struct ad9088_phy *phy, u32 mcs_track_decimation,
 				  u16 initialize_track_cal)
 {
 	adi_apollo_device_t *device = &phy->ad9088;
@@ -307,6 +307,19 @@ int ad9088_mcs_tracking_cal_setup(struct ad9088_phy *phy, u16 mcs_track_decimati
 		ret = ad9088_check_apollo_error(&phy->spi->dev, ret,
 						"adi_apollo_mcs_cal_tracking_initialize_set");
 		if (ret)
+			return ret;
+	}
+
+	/* Enable ADF4382 auto clock alignment and set phase adjustment */
+	if (phy->iio_adf4382) {
+		ret = ad9088_iio_write_channel_ext_info(phy, phy->iio_adf4382,
+							"en_auto_align", 1);
+		if (ret < 0)
+			return ret;
+
+		ret = iio_write_channel_attribute(phy->iio_adf4382, 125, 0,
+						  IIO_CHAN_INFO_PHASE);
+		if (ret < 0)
 			return ret;
 	}
 

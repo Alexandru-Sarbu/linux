@@ -184,7 +184,7 @@
 		#clock-cells = <1>;
 		clock-output-names = "rx_gt_clk", "rx_out_clk";
 
-		adi,sys-clk-select = <XCVR_CPLL>;
+		adi,sys-clk-select = <XCVR_QPLL>;
 		adi,out-clk-select = <XCVR_REFCLK>;
 		adi,use-lpm-enable;
 	};
@@ -201,7 +201,7 @@
 		#clock-cells = <1>;
 		clock-output-names = "rx_os_gt_clk", "rx_os_out_clk";
 
-		adi,sys-clk-select = <XCVR_CPLL>;
+		adi,sys-clk-select = <XCVR_QPLL>;
 		adi,out-clk-select = <XCVR_REFCLK>;
 		adi,use-lpm-enable;
 	};
@@ -277,7 +277,7 @@
 };
 
 &clk0_ad9528 {
-	reset-gpios = <&gpio0 113 0>;
+	reset-gpios = <&gpio0 113 1>;
 };
 
 &axi_adrv9009_core_tx {

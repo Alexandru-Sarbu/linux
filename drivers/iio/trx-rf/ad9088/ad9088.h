@@ -194,6 +194,8 @@ struct ad9088_debugfs_entry {
  * @adcdac_num: ADC/DAC number (0-3 per side)
  * @adcdac_mask: ADC/DAC bitmask (ADI_APOLLO_ADC_Ax or ADI_APOLLO_DAC_Ax)
  * @side: Chip side (0=A, 1=B)
+ * @fddc_pi: Profile index for tx_fduc[]/rx_fddc[] (fddc_num % FDUCS_PER_SIDE)
+ * @cddc_pi: Profile index for tx_cduc[]/rx_cddc[] (cddc_num % CDUCS_PER_SIDE)
  *
  * Pre-computed mapping from IIO channel to hardware blocks.
  * Derived from profile mux configuration at init time.
@@ -206,6 +208,8 @@ struct ad9088_chan_map {
 	u8 adcdac_num;
 	u32 adcdac_mask;
 	u8 side;
+	u8 fddc_pi;
+	u8 cddc_pi;
 };
 
 struct ad9088_phy {
@@ -216,6 +220,7 @@ struct ad9088_phy {
 	adi_apollo_top_t profile;
 	adi_cms_chip_id_t chip_id;
 	struct axiadc_chip_info chip_info;
+
 	struct bin_attribute pfilt;
 	struct bin_attribute cfir;
 	struct bin_attribute cal_data;
@@ -252,7 +257,8 @@ struct ad9088_phy {
 	bool cddc_sample_delay_en;
 	bool fddc_sample_delay_en;
 	u32 multidevice_instance_count;
-	u16 mcs_track_decimation;
+	u32 mcs_track_decimation;
+	u32 mcs_track_win;
 
 	struct ad9088_debugfs_entry debugfs_entry[32];
 	u32 ad9088_debugfs_entry_index;
@@ -365,7 +371,7 @@ int ad9088_delta_t_measurement_set(struct ad9088_phy *phy, u32 mode);
 int ad9088_delta_t_measurement_get(struct ad9088_phy *phy, u32 mode, s64 *apollo_delta_t);
 int ad9088_mcs_init_cal_validate(struct ad9088_phy *phy,
 				 adi_apollo_mcs_cal_init_status_t *init_cal_status);
-int ad9088_mcs_tracking_cal_setup(struct ad9088_phy *phy, u16 mcs_track_decimation,
+int ad9088_mcs_tracking_cal_setup(struct ad9088_phy *phy, u32 mcs_track_decimation,
 				  u16 initialize_track_cal);
 int ad9088_mcs_init_cal_status_print(struct ad9088_phy *phy, char *buf,
 				     adi_apollo_mcs_cal_init_status_t *status);

@@ -180,7 +180,7 @@ int ad9088_parse_dt(struct ad9088_phy *phy)
 	 * periodic SYSREF, keep below 32768. Default: 1023.
 	 */
 	phy->mcs_track_decimation = 1023;
-	of_property_read_u16(node, "adi,mcs-track-decimation", &phy->mcs_track_decimation);
+	of_property_read_u32(node, "adi,mcs-track-decimation", &phy->mcs_track_decimation);
 
 	phy->trig_sync_en = of_property_read_bool(node, "adi,trigger-sync-en");
 
@@ -240,6 +240,12 @@ int ad9088_parse_dt(struct ad9088_phy *phy)
 		phy->profile.jtx[1].common_link_cfg.subclass = val;
 		phy->profile.jrx[0].common_link_cfg.subclass = val;
 		phy->profile.jrx[1].common_link_cfg.subclass = val;
+
+		if (val) {
+			if (!phy->profile.mcs_cfg.side_a_sysref.sysref_present ||
+			    !phy->profile.mcs_cfg.side_b_sysref.sysref_present)
+				phy->profile.mcs_cfg.center_sysref.sysref_present = true;
+		}
 	}
 
 	if (phy->profile.profile_cfg.profile_version.major != ADI_APOLLO_PROFILE_VERSION_MAJOR ||
@@ -251,19 +257,6 @@ int ad9088_parse_dt(struct ad9088_phy *phy)
 			ADI_APOLLO_PROFILE_VERSION_MINOR);
 
 		return -EINVAL;
-	}
-
-	/* FIXME ! */
-	if (phy->profile.profile_cfg.profile_version.patch < 3) {
-		dev_warn(dev, "Old profile version patch %u, updating to %u\n",
-			 phy->profile.profile_cfg.profile_version.patch, 3);
-
-		phy->profile.profile_cfg.profile_version.patch = 3;
-		phy->profile.reserved_cfg[4] = phy->profile.reserved_cfg[0];
-		phy->profile.reserved_cfg[5] = phy->profile.reserved_cfg[1];
-		phy->profile.reserved_cfg[0] = 0;
-		phy->profile.reserved_cfg[1] = 0;
-		phy->profile.mcs_cfg.center_sysref.sysref_present = true;
 	}
 
 	/* ADF4382 clock align GPIO configuration - set defaults */
@@ -280,6 +273,19 @@ int ad9088_parse_dt(struct ad9088_phy *phy)
 	of_property_read_variable_u8_array(node, "adi,clock-align-delay-strobe-gpio-num",
 					   p->mcs_cfg.adf4382_cfg.clock_align_delay_strobe_gpio,
 					   1, ADI_APOLLO_NUM_ADF4382_GPIOS);
+
+	/*
+	 * MCS tracking window: the amount of deviation (in femtoseconds) the
+	 * ADF4382 output clock can drift relative to AD9084's External SysRef
+	 * before MCS Tracking attempts to correct it. Overrides the profile
+	 * value for both ADF4382 instances when specified.
+	 */
+	if (!of_property_read_u32(node, "adi,mcs-track-win", &phy->mcs_track_win)) {
+		p->mcs_cfg.adf4382_cfg.track_win[0] = phy->mcs_track_win;
+		p->mcs_cfg.adf4382_cfg.track_win[1] = phy->mcs_track_win;
+	} else {
+		phy->mcs_track_win = p->mcs_cfg.adf4382_cfg.track_win[0];
+	}
 
 	dev_dbg(dev, "Profile CRC32 %u\n", phy->profile.profile_checksum);
 	phy->profile.profile_checksum = crc32_be(0, (unsigned char const *)p,

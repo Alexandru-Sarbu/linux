@@ -6,7 +6,7 @@
 #include <dt-bindings/jesd204/adxcvr.h>
 
 #ifndef DEVICE_PROFILE_NAME
-#define DEVICE_PROFILE_NAME	"204C_M4_L8_NP16_2p5_4x2.bin"
+#define DEVICE_PROFILE_NAME	"204C_M4_L8_NP16_20p0_4x2.bin"
 #endif
 
 #ifndef OUT_CLK_SELECT
@@ -107,6 +107,7 @@
 			adi,ref-doubler-enable;
 			clock-output-names = "adf4382_out_clk";
 			adi,power-up-frequency = /bits/ 64 <20000000000>;
+			#io-channel-cells = <1>;
 		};
 	};
 
@@ -247,9 +248,8 @@
 			#io-channel-cells = <1>;
 
 			spi-max-frequency = <1000000>;
-			adi,spi-3wire-enable;
 
-			clocks = <&clkin_250>;
+			clocks = <&clkin_125>;
 			clock-names = "refin";
 			clock-output-names = "adf4030_bsync_0", "adf4030_bsync_1",
 				"adf4030_bsync_2", "adf4030_bsync_3", "adf4030_bsync_4",
@@ -270,10 +270,10 @@
 			channel@0 {
 				reg = <0>;
 				adi,extended-name = "ADF4030_BSYNC0";
-				auto-align-on-sync-en;
 				adi,rcm = <62>; // LVDS
 				adi,link-rx-en;
 				adi,float-rx-en;
+				adi,ac-coupled-en;
 			};
 			channel@1 {
 				reg = <1>;
@@ -281,7 +281,7 @@
 				auto-align-on-sync-en;
 				adi,output-en;
 				adi,input-output-reconfig-en;
-				adi,rcm = <62>; // LVDS
+				adi,rcm = <1>;
 				adi,link-rx-en;
 				adi,float-rx-en;
 			};
@@ -372,6 +372,20 @@
 		xlnx,is-dual = <0x1>;
 		xlnx,tri-default = <0xFFFFFFFF>;
 		xlnx,tri-default-2 = <0xFFFFFFFF>;
+	};
+
+	axi_uart: serial@88180000 {
+		compatible = "xlnx,axi-uartlite-2.0", "xlnx,xps-uartlite-1.00.a";
+		reg = <0x0 0x88180000 0x0 0x1000>;
+		clock-names = "s_axi_aclk";
+		clocks = <&mig_clkout1>;
+		clock-frequency = <100000000>;
+		current-speed = <115200>;
+		status = "okay";
+		device_type = "serial";
+		interrupt-parent = <&axi_intc_0>;
+		interrupts = <0 1>;
+		interrupt-names = "interrupt";
 	};
 
 	axi_iic_main: i2c@88150000 {
@@ -547,7 +561,7 @@
 				<&axi_ad9084_core_tx 0 DEFRAMER_LINK_A0_TX>,
 				<&axi_ad9084_core_tx_b 0 DEFRAMER_LINK_B0_TX>;
 
-			adi,side-b-use-seperate-tpl-en;
+			adi,side-b-use-separate-tpl-en;
 #else
 			jesd204-link-ids = <DEFRAMER_LINK_A0_TX FRAMER_LINK_A0_RX>;
 

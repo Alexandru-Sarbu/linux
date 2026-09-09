@@ -61,6 +61,7 @@
 #define ADF4382_DIVIDER		1
 #define ADF4382_DIG_DELAY	14
 #define ADF4382_ANA_DELAY	0
+#define ADF4382_MCS_TRACK_WIN	4000
 
 #define APOLLO_SYSREF_DIVIDER	(FREQ_J1_MHz / SYSREF_CLK_MHz)
 #define APOLLO_SYSREF_DIG_DELAY	14
@@ -92,7 +93,7 @@
 
 #undef APOLLO_LOWFREQ_PATH_ENABLED
 
-#define LTC6953_AION_BSYNC_6_DIVIDER	64
+#define LTC6953_AION_BSYNC_6_DIVIDER	(FREQ_J1_MHz / SYSREF_CLK_MHz)
 #define LTC6953_AION_BSYNC_6_DIG_DELAY	14
 #define LTC6953_AION_BSYNC_6_ANA_DELAY	0
 
@@ -1091,6 +1092,8 @@
 		adi,hsci-tx-clk-adj = <7>;
 #endif
 		adi,nyquist-zone = <2>;
+		adi,subclass = <1>;
+
 		adi,hsci-auto-linkup-mode-en;
 		//adi,hsci-disable-after-boot-en;
 
@@ -1106,6 +1109,7 @@
 
 		adi,clock-align-delay-adjust-gpio-num = /bits/ 8 <29 0>;
 		adi,clock-align-delay-strobe-gpio-num = /bits/ 8 <30 0>;
+		adi,mcs-track-win = <ADF4382_MCS_TRACK_WIN>;
 
 		/* Clocks */
 		clocks = <&adf4382_0 0>;
@@ -1166,6 +1170,8 @@
 		adi,hsci-tx-clk-adj = <6>;
 #endif
 		adi,nyquist-zone = <2>;
+		adi,subclass = <1>;
+
 		adi,hsci-auto-linkup-mode-en;
 		//adi,hsci-disable-after-boot-en;
 
@@ -1181,6 +1187,7 @@
 
 		adi,clock-align-delay-adjust-gpio-num = /bits/ 8 <29 0>;
 		adi,clock-align-delay-strobe-gpio-num = /bits/ 8 <30 0>;
+		adi,mcs-track-win = <ADF4382_MCS_TRACK_WIN>;
 
 		/* Clocks */
 		clocks = <&adf4382_1 0>;
@@ -1228,6 +1235,7 @@
 		adi,hsci-tx-clk-adj = <6>;
 #endif
 		adi,nyquist-zone = <2>;
+		adi,subclass = <1>;
 
 		adi,hsci-auto-linkup-mode-en;
 		//adi,hsci-disable-after-boot-en;
@@ -1244,6 +1252,7 @@
 
 		adi,clock-align-delay-adjust-gpio-num = /bits/ 8 <29 0>;
 		adi,clock-align-delay-strobe-gpio-num = /bits/ 8 <30 0>;
+		adi,mcs-track-win = <ADF4382_MCS_TRACK_WIN>;
 
 		/* Clocks */
 		clocks = <&adf4382_2 0>;
@@ -1291,6 +1300,7 @@
 		adi,hsci-tx-clk-adj = <6>;
 #endif
 		adi,nyquist-zone = <2>;
+		adi,subclass = <1>;
 
 		adi,hsci-auto-linkup-mode-en;
 		//adi,hsci-disable-after-boot-en;
@@ -1307,6 +1317,7 @@
 
 		adi,clock-align-delay-adjust-gpio-num = /bits/ 8 <29 0>;
 		adi,clock-align-delay-strobe-gpio-num = /bits/ 8 <30 0>;
+		adi,mcs-track-win = <ADF4382_MCS_TRACK_WIN>;
 
 		/* Clocks */
 		clocks = <&adf4382_3 0>;
